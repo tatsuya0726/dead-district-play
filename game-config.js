@@ -1,0 +1,1 @@
+window.GAME_CONFIG = {"productName":"Dead District","frameworkUrl":"Build/Web.framework.js.unityweb","productVersion":"0.3.0","loaderUrl":"Build/Web.loader.js","dataUrl":"Build/Web.data.unityweb","codeUrl":"Build/Web.wasm.unityweb","streamingAssetsUrl":"StreamingAssets","companyName":"Tatsuya Games"};

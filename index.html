@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#101916"><meta name="apple-mobile-web-app-capable" content="yes"><title>DEAD DISTRICT — Zombie Survival</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080e0b;color:#edf4eb;font-family:system-ui,sans-serif}#game{width:100%;height:100%;display:block;touch-action:none}#front{position:fixed;inset:0;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 70% 0,#263d2d,#080e0b 70%)}article{width:min(560px,100%)}.tag{color:#a4c776;letter-spacing:.28em;font-size:12px}h1{font-size:clamp(40px,8vw,72px);line-height:.94;letter-spacing:-.05em;margin:18px 0}p{color:#b5c2b6;line-height:1.8;font-size:14px}.maps{display:flex;gap:8px;margin:20px 0}.maps span{border:1px solid #42553c;padding:8px 16px;color:#c8d5bf;font-size:12px}button{padding:16px 24px;border:0;background:#c4e287;color:#15200f;font-size:17px;font-weight:750;cursor:pointer;border-radius:3px}button:disabled{opacity:.5}progress{display:block;width:100%;accent-color:#c4e287;height:8px;margin-top:18px}#status{font-size:13px;white-space:pre-wrap}#rotate{display:none;position:fixed;inset:0;background:#0c160ff2;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:3}#rotate b{font-size:26px}body.running #front{display:none}@media(orientation:portrait){body.running #rotate{display:flex}}.note{font-size:11px;color:#829180}
+</style></head><body>
+<canvas id="game" tabindex="0" aria-label="ゾンビサバイバルゲーム"></canvas>
+<div id="front"><article><div class="tag">MOBILE ZOMBIE SURVIVAL / PROTOTYPE</div><h1>DEAD<br>DISTRICT</h1><p>建物の角、狭い廊下、倉庫の通路。<br>ゾンビを撃退し、90秒後の大型個体を倒せ。</p><div class="maps"><span>市街地</span><span>オフィス</span><span>倉庫</span></div><button id="start">タップしてゲームを開始</button><progress id="progress" value="0" max="1" hidden></progress><p id="status">iPhoneを横向きにしてください。左指で移動・右ボタンでダッシュ。射撃は自動です。</p><p class="note">初回はゲームデータをダウンロードします。Wi-Fi推奨。<br>画面内のゲームUIは英語です。PCではWASD / 矢印キー＋Space。</p></article></div>
+<div id="rotate"><div><b>iPhoneを横向きに</b><p>画面の向きをロックしている場合は解除してください。</p></div></div>
+<script src="game-config.js"></script><script>
+const start=document.getElementById('start'),statusText=document.getElementById('status'),bar=document.getElementById('progress'),canvas=document.getElementById('game');
+function failure(message){start.disabled=false;start.textContent='再読み込みして再試行';start.onclick=()=>location.reload();statusText.textContent='起動できませんでした。Safariを更新し、他のタブを閉じて再試行してください。\n'+message;}
+start.onclick=async()=>{start.disabled=true;bar.hidden=false;statusText.textContent='ゲームを読み込んでいます…';
+if(!window.GAME_CONFIG){failure('ゲーム設定を読み込めませんでした。');return;}
+const script=document.createElement('script');script.src=GAME_CONFIG.loaderUrl;script.onerror=()=>failure('通信エラー');script.onload=()=>{
+const config={...GAME_CONFIG,devicePixelRatio:Math.min(window.devicePixelRatio||1,1.5),matchWebGLToCanvasSize:true,showBanner:(text,type)=>{if(type==='error')failure(text);}};
+createUnityInstance(canvas,config,p=>{bar.value=p;statusText.textContent='読み込み中 '+Math.round(p*100)+'%';}).then(instance=>{window.gameInstance=instance;document.body.classList.add('running');canvas.focus();}).catch(e=>failure(String(e)));
+};document.body.appendChild(script);
+};
+</script></body></html>
